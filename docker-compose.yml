@@ -1,0 +1,16 @@
+services:
+  ftp:
+    image: stilliard/pure-ftpd:latest
+    container_name: pure-ftpd
+    restart: unless-stopped
+    ports:
+      - "21:21"  # FTP 控制連線 port
+      - "30000-30009:30000-30009"  # FTP 被動模式 port 範圍
+    environment:
+      PUBLICHOST: "127.0.0.1"  # 改為你的主機實際 IP 或 localhost
+      ADDED_FLAGS: "--tls=2"  # 強制 TLS 加密
+    volumes:
+      - ./ftpdata:/home/ftpusers                 # 使用者上傳資料
+      - ./ftp/passwd:/etc/pure-ftpd/passwd       # 虛擬帳號資料庫
+      - ./ftp/certs:/etc/ssl/private             # TLS 憑證
+      - ./scripts:/scripts                       # 管理腳本

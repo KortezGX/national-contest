@@ -1,0 +1,13 @@
+# 忽略所有 ftpdata 下的 user 資料夾與內容
+ftpdata/*
+
+# 忽略 tmp 目錄
+/tmp/
+
+# 忽略 pure-ftpd 憑證檔案（含私鑰）
+ftp/certs/pure-ftpd.pem
+*.pem
+
+# 忽略 passwd 目錄下所有帳號資料，但保留 README.md
+ftp/passwd/*
+!ftp/ftp/passwd/README.md
