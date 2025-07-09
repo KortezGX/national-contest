@@ -14,3 +14,12 @@ services:
       - ./ftp/passwd:/etc/pure-ftpd/passwd       # 虛擬帳號資料庫
       - ./ftp/certs:/etc/ssl/private             # TLS 憑證
       - ./scripts:/scripts                       # 管理腳本
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "2345:80"  # 對外 http 服務，瀏覽器請用 http://localhost:2345/
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d  # nginx 虛擬主機設定檔
+      - ./ftpdata:/var/www                # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
