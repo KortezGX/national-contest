@@ -11,3 +11,6 @@ ftp/certs/pure-ftpd.pem
 # 忽略 passwd 目錄下所有帳號資料，但保留 README.md
 ftp/passwd/*
 !ftp/ftp/passwd/README.md
+
+# 忽略 mysql 資料目錄
+mysql_data/
