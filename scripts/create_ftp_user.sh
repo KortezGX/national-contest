@@ -25,6 +25,13 @@ mkdir -p "/home/ftpusers/$USERNAME"
 chown $FTP_UID:$FTP_GID "$HOMEDIR"
 chmod 755 "$HOMEDIR"
 
+# 自動建立 module_a、module_b、module_c 目錄
+for module in module_a module_b module_c; do
+  mkdir -p "$HOMEDIR/$module"
+  chown $FTP_UID:$FTP_GID "$HOMEDIR/$module"
+  chmod 755 "$HOMEDIR/$module"
+done
+
 # 建立虛擬帳號（需手動輸入密碼）
 pure-pw useradd "$USERNAME" -u $FTP_UID -g $FTP_GID -d "$HOMEDIR" -f /etc/pure-ftpd/passwd/pureftpd.passwd
 pure-pw mkdb /etc/pure-ftpd/passwd/pureftpd.pdb -f /etc/pure-ftpd/passwd/pureftpd.passwd
