@@ -23,3 +23,15 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d  # nginx 虛擬主機設定檔
       - ./ftpdata:/var/www                # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
+  laravel:
+    build:
+      context: ./laravel
+      dockerfile: Dockerfile
+    image: dev-laravel
+    container_name: laravel-app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./ftpdata:/var/www/html
+    expose:
+      - "9000"
