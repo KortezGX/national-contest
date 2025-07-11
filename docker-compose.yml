@@ -23,6 +23,21 @@ services:
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d  # nginx 虛擬主機設定檔
       - ./ftpdata:/var/www                # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
+    depends_on:
+      - ftp
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "33060:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./scripts:/scripts
+    depends_on:
+      - ftp
   laravel:
     build:
       context: ./laravel
@@ -37,14 +52,16 @@ services:
       - "9000"
     depends_on:
       - mysql
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
+  node:
+    image: node:22-alpine
+    container_name: node-app
     restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "33060:3306"
+    working_dir: /app
     volumes:
-      - ./mysql_data:/var/lib/mysql
-      - ./scripts:/scripts
+      - ./node:/app
+      - ./ftpdata:/ftpdata
+    expose:
+      - "3000"
+    depends_on:
+      - ftp
+    command: sh -c "npm install express && node index.js"
