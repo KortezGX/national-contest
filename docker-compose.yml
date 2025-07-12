@@ -52,16 +52,44 @@ services:
       - "9000"
     depends_on:
       - mysql
-  node:
+
+  node-01:
     image: node:22-alpine
-    container_name: node-app
+    container_name: node-01
     restart: unless-stopped
     working_dir: /app
     volumes:
-      - ./node:/app
-      - ./ftpdata:/ftpdata
+      - ./ftpdata/01/module_c:/app
     expose:
-      - "3000"
+      - "3001"
     depends_on:
       - ftp
-    command: sh -c "npm install express && node index.js"
+    command: npx nodemon --watch . --delay 1 index.js
+
+  node-02:
+    image: node:22-alpine
+    container_name: node-02
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./ftpdata/02/module_c:/app
+    expose:
+      - "3002"
+    depends_on:
+      - ftp
+    command: npx nodemon --watch . --delay 1 index.js
+
+  node-03:
+    image: node:22-alpine
+    container_name: node-03
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./ftpdata/03/module_c:/app
+    expose:
+      - "3003"
+    depends_on:
+      - ftp
+    command: npx nodemon --watch . --delay 1 index.js
+
+  # 若有更多使用者，請依此格式複製 node-01 並調整路徑與 port
