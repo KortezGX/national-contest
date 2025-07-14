@@ -14,6 +14,7 @@ services:
       - ./ftp/passwd:/etc/pure-ftpd/passwd       # 虛擬帳號資料庫
       - ./ftp/certs:/etc/ssl/private             # TLS 憑證
       - ./scripts:/scripts                       # 管理腳本
+  
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -25,6 +26,7 @@ services:
       - ./ftpdata:/var/www                # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
     depends_on:
       - ftp
+  
   mysql:
     image: mysql:8.0
     container_name: mysql
@@ -38,6 +40,7 @@ services:
       - ./scripts:/scripts
     depends_on:
       - ftp
+  
   laravel:
     build:
       context: ./laravel
@@ -53,9 +56,9 @@ services:
     depends_on:
       - mysql
 
-  node-01:
+  node-test:
     image: node:22-alpine
-    container_name: node-01
+    container_name: node-test
     restart: unless-stopped
     working_dir: /app
     volumes:
@@ -64,26 +67,4 @@ services:
       - ftp
     command: npx nodemon --watch . --delay 1 index.js
 
-  node-02:
-    image: node:22-alpine
-    container_name: node-02
-    restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - ./ftpdata/02/module_c:/app
-    depends_on:
-      - ftp
-    command: npx nodemon --watch . --delay 1 index.js
-
-  node-03:
-    image: node:22-alpine
-    container_name: node-03
-    restart: unless-stopped
-    working_dir: /app
-    volumes:
-      - ./ftpdata/03/module_c:/app
-    depends_on:
-      - ftp
-    command: npx nodemon --watch . --delay 1 index.js
-
-  # 若有更多使用者，請依此格式複製 node-01 並調整路徑與 port
+  # node services 請由 scripts/upWithNodeService.sh 產生

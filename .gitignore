@@ -2,6 +2,8 @@
 ftpdata/*
 !ftpdata/README.md
 
+# 忽略自動產生的 compose 檔案
+docker-compose.generated.yml
 # 忽略 tmp 目錄
 /tmp/
 
