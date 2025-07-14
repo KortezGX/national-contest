@@ -17,7 +17,3 @@ ftp/passwd/*
 
 # 忽略 mysql 資料目錄
 mysql_data/
-
-# 忽略 node 目錄下所有檔案，但保留 index.js
-node/*
-!node/index.js
