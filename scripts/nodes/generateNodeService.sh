@@ -16,8 +16,6 @@ GENERATED_PATH="docker-compose.generated.yml" # 產生的 docker-compose 檔案�
 NODE_IMAGE="node:22-alpine" # node container 使用的映像檔
 NODE_CMD="npx nodemon --watch . --delay 1 index.js" # 啟動 node 服務的指令
 NODE_DEPENDS="ftp" # 依賴的 service（docker-compose 依賴）
-PORT_BASE=3331 # service 的起始 port
-PORT_OFFSET=0 # 用於計算每個 service 的 port 偏移量
 
 # 取得所有使用者目錄
 USER_DIRS=$(find $FTP_PATH -mindepth 1 -maxdepth 1 -type d | sort)
@@ -41,9 +39,6 @@ for USER_PATH in $USER_DIRS; do
   MODULE_PATH="$USER_PATH/$MODULE_NAME"
 
   if [ -d "$MODULE_PATH" ]; then
-    PORT=$((PORT_BASE + PORT_OFFSET))
-    PORT_OFFSET=$((PORT_OFFSET + 1))
-
     NODE_SERVICES+="  node-$USER:\n"
     NODE_SERVICES+="    image: $NODE_IMAGE\n"
     NODE_SERVICES+="    container_name: node-$USER\n"
@@ -53,8 +48,8 @@ for USER_PATH in $USER_DIRS; do
     NODE_SERVICES+="      - ./$MODULE_PATH:/app\n"
     NODE_SERVICES+="    depends_on:\n"
     NODE_SERVICES+="      - $NODE_DEPENDS\n"
-    NODE_SERVICES+="    ports:\n"
-    NODE_SERVICES+="      - \"$PORT:3000\"\n"
+    NODE_SERVICES+="    expose:\n"
+    NODE_SERVICES+="      - \"3000\"\n"
     NODE_SERVICES+="    command: $NODE_CMD\n\n"
   fi
 done
