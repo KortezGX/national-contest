@@ -27,6 +27,11 @@ for USER_PATH in $USER_DIRS; do
   MODULE_PATH="$USER_PATH/$MODULE_NAME"
   if [ -d "$MODULE_PATH" ]; then
     echo -e " \033[1;32m [$USER] $USER_PATH/$MODULE_NAME\033[0m"
+    # 若沒有 index.js，則複製預設檔案
+    if [ ! -f "$MODULE_PATH/index.js" ]; then
+      cp scripts/nodes/index.js "$MODULE_PATH/index.js"
+      echo -e "      \033[1;34m已複製預設 index.js 到 $MODULE_PATH\033[0m"
+    fi
   else
     echo -e " \033[0;31m [$USER] $USER_PATH (無 $MODULE_NAME)\033[0m"
   fi
