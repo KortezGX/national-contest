@@ -18,10 +18,10 @@ fi
 USERNAME="$1"
 FTP_UID=$(id -u ftpuser)
 FTP_GID=$(id -g ftpuser)
-HOMEDIR="/home/$USERNAME"
+HOMEDIR="$FTP_ROOT/$USERNAME"
 
 # 建立家目錄
-mkdir -p "/home/$USERNAME"
+mkdir -p "$HOMEDIR"
 chown $FTP_UID:$FTP_GID "$HOMEDIR"
 chmod 755 "$HOMEDIR"
 
