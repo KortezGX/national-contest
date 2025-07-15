@@ -8,7 +8,7 @@ cd "$(dirname "$0")/../.."
 echo -e "\033[1;33m目前工作目錄：$(pwd)\033[0m"
 
 # 統一設定路徑
-FTP_PATH="ftpdata" # 使用者上傳檔案目錄
+FTP_PATH="ftp_data" # 使用者上傳檔案目錄
 MODULE_NAME="module_c" # Node 模組資料夾名稱
 COMPOSE_PATH="docker-compose.yml" # 基礎 docker-compose 檔案路徑
 GENERATED_PATH="docker-compose.generated.yml" # 產生的 docker-compose 檔案路徑

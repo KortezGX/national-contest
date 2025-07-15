@@ -1,6 +1,6 @@
 # 忽略所有 ftpdata 下的 user 資料夾與內容
-ftpdata/*
-!ftpdata/README.md
+ftp_data/*
+!ftp_data/README.md
 
 # 忽略自動產生的 compose 檔案
 docker-compose.generated.yml
