@@ -3,7 +3,7 @@
 # 用法：./delete_mysql_user_db.sh {username}
 
 # 引入共用 footer（結束腳本 function）
-source ../lib/footer.sh
+source ./lib/footer.sh
 
 if [ -z "$1" ]; then
   echo -e "\033[1;33m========================="

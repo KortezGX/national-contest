@@ -3,7 +3,7 @@
 # 用法：./show_mysql_users_dbs.sh
 
 # 引入共用 footer（結束腳本 function）
-source ../lib/footer.sh
+source ./lib/footer.sh
 
 echo -ne "\033[1;36m請輸入 MySQL root 密碼: \033[0m"
 read -sp "" MYSQL_PWD
