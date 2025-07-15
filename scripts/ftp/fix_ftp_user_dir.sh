@@ -19,7 +19,7 @@ fi
 USERNAME="$1"
 FTP_UID=$(id -u ftpuser)
 FTP_GID=$(id -g ftpuser)
-HOMEDIR="/home/ftpusers/$USERNAME"
+HOMEDIR="/home/$USERNAME"
 
 mkdir -p "$HOMEDIR"
 chown $FTP_UID:$FTP_GID "$HOMEDIR"

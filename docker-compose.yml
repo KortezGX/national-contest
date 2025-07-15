@@ -7,13 +7,15 @@ services:
       - "21:21"  # FTP 控制連線 port（外部用戶端連線用，建議不要被防火牆擋住）
       - "30000-30009:30000-30009"  # FTP 被動模式 port 範圍（需與 pure-ftpd 設定一致）
     environment:
-      PUBLICHOST: "127.0.0.1"  # 改為你的主機實際 IP 或 localhost，否則外部用戶端被動模式會失敗
-      ADDED_FLAGS: "--tls=2"  # 強制 TLS 加密，FTP 用戶端需支援 TLS
+      PUBLICHOST: "${FTP_HOST}"  # 改為主機實際 IP 或 localhost，否則外部用戶端被動模式會失敗
+      ADDED_FLAGS: "--tls=${FTP_TLS}"      # 強制 TLS 加密，FTP 用戶端需支援 TLS
+      MODULE_FOLDERS: "${MODULE_FOLDERS}"  # 使用者對應的模組名稱設定
     volumes:
-      - ./ftpdata:/home/ftpusers                 # 使用者上傳資料（目錄權限需正確，否則 FTP 無法寫入）
-      - ./ftp/passwd:/etc/pure-ftpd/passwd       # 虛擬帳號資料庫
-      - ./ftp/certs:/etc/ssl/private             # TLS 憑證（需有正確的 pem 檔案）
-      - ./scripts:/scripts                       # 管理腳本
+      - ${PATH_DATA}:/home                            # 使用者家目錄（目錄權限需正確，否則 FTP 無法寫入）
+      - ${PATH_FTP}/passwd:/etc/pure-ftpd/passwd      # 虛擬帳號資料庫
+      - ${PATH_FTP}/certs:/etc/ssl/private            # TLS 憑證（需有正確的 pem 檔案）
+      - ./scripts/ftp:/scripts                        # ftp 管理腳本
+      - ./scripts/lib:/scripts/lib                    # 共用函式庫
   
   nginx:
     image: nginx:alpine

@@ -16,7 +16,7 @@ if [ -z "$1" ]; then
   end_script
 fi
 USERNAME="$1"
-HOMEDIR="/home/ftpusers/$USERNAME"
+HOMEDIR="/home/$USERNAME"
 
 echo -ne "\033[1;31m"
 read -p "確定要刪除 FTP 帳號 '$USERNAME' 及其所有檔案嗎？(y/N): " confirm

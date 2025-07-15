@@ -18,18 +18,20 @@ fi
 USERNAME="$1"
 FTP_UID=$(id -u ftpuser)
 FTP_GID=$(id -g ftpuser)
-HOMEDIR="/home/ftpusers/$USERNAME"
+HOMEDIR="/home/$USERNAME"
 
 # 建立家目錄
-mkdir -p "/home/ftpusers/$USERNAME"
+mkdir -p "/home/$USERNAME"
 chown $FTP_UID:$FTP_GID "$HOMEDIR"
 chmod 755 "$HOMEDIR"
 
-# 自動建立 module_a、module_b、module_c 目錄
-for module in module_a module_b module_c; do
-  mkdir -p "$HOMEDIR/$module"
-  chown $FTP_UID:$FTP_GID "$HOMEDIR/$module"
-  chmod 755 "$HOMEDIR/$module"
+# 依據 MODULE_FOLDERS 環境變數動態建立子目錄
+IFS=',' read -ra MODULES <<< "$MODULE_FOLDERS"
+for module in "${MODULES[@]}"; do
+  module_trimmed=$(echo "$module" | xargs) # 去除空白
+  mkdir -p "$HOMEDIR/$module_trimmed"
+  chown $FTP_UID:$FTP_GID "$HOMEDIR/$module_trimmed"
+  chmod 755 "$HOMEDIR/$module_trimmed"
 done
 
 # 建立虛擬帳號（需手動輸入密碼）
