@@ -4,7 +4,7 @@ services:
     container_name: pure-ftpd
     restart: unless-stopped
     ports:
-      - "21:21"  # FTP 控制連線 port（外部用戶端連線用，建議不要被防火牆擋住）
+      - "${FTP_PORT}:21"  # FTP 控制連線 port（外部用戶端連線用，建議不要被防火牆擋住）
       - "30000-30009:30000-30009"  # FTP 被動模式 port 範圍（需與 pure-ftpd 設定一致）
     environment:
       PUBLICHOST: "${FTP_HOST}"  # 改為主機實際 IP 或 localhost，否則外部用戶端被動模式會失敗
@@ -14,18 +14,18 @@ services:
       - ${PATH_DATA}:/home                            # 使用者家目錄（目錄權限需正確，否則 FTP 無法寫入）
       - ${PATH_FTP}/passwd:/etc/pure-ftpd/passwd      # 虛擬帳號資料庫
       - ${PATH_FTP}/certs:/etc/ssl/private            # TLS 憑證（需有正確的 pem 檔案）
-      - ./scripts/ftp:/scripts                        # ftp 管理腳本
       - ./scripts/lib:/scripts/lib                    # 共用函式庫
+      - ./scripts/ftp:/scripts                        # ftp 管理腳本
   
   nginx:
     image: nginx:alpine
     container_name: nginx
     restart: unless-stopped
     ports:
-      - "2345:80"  # 對外 http 服務，瀏覽器請用 http://localhost:2345/
+      - "${NGINX_PORT}:80"  # 對外 http 服務，瀏覽器請用 http://localhost:2345/
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d  # nginx 虛擬主機設定檔（動態託管 node/laravel 與一般 html）
-      - ./ftpdata:/var/www                # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
+      - ${PATH_NGINX}:/etc/nginx/conf.d  # nginx 虛擬主機設定檔（動態託管 node/laravel 與一般 html）
+      - ${PATH_DATA}:/var/www             # 掛載所有 user 的 web 目錄，對應 /var/www/user/web
     depends_on:
       - ftp  # 確保 FTP 先啟動，nginx 掛載的目錄才會存在
   
@@ -34,12 +34,13 @@ services:
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root  # root 密碼，建議正式環境改強一點
+      MYSQL_ROOT_PASSWORD: ${ROOT_PWD}  # root 密碼，建議正式環境改強一點
     ports:
-      - "33060:3306"  # 外部連線用，33060 是主機 port
+      - "${MYSQL_PORT}:3306"  # 外部連線用，33060 是主機 port
     volumes:
-      - ./mysql_data:/var/lib/mysql  # 資料庫持久化，目錄權限需正確
-      - ./scripts:/scripts           # 管理腳本
+      - ${PATH_MYSQL}:/var/lib/mysql  # 資料庫持久化，目錄權限需正確
+      - ./scripts/lib:/scripts/lib    # 共用函式庫
+      - ./scripts/mysql:/scripts      # ftp 管理腳本
     depends_on:
       - ftp  # 依賴 FTP，確保啟動順序
   
@@ -48,11 +49,11 @@ services:
       context: ./laravel
       dockerfile: Dockerfile
     image: dev-laravel
-    container_name: laravel-app
+    container_name: laravel
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
-      - ./ftpdata:/var/www/html  # 掛載所有 user 的 web 目錄，Laravel 直接讀取
+      - ${PATH_DATA}:/var/www/html  # 掛載所有 user 的 web 目錄，Laravel 直接讀取
     expose:
       - "9000"  # 只在 docker network 內開放，nginx fastcgi_pass 用
     depends_on:
